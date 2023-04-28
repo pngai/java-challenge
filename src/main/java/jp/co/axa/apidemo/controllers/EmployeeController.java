@@ -3,10 +3,12 @@ package jp.co.axa.apidemo.controllers;
 import jp.co.axa.apidemo.entities.Employee;
 import jp.co.axa.apidemo.services.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -28,13 +30,13 @@ public class EmployeeController {
     @PostMapping("/employees")
     public void saveEmployee(Employee employee){
         employeeService.saveEmployee(employee);
-        System.out.println("Employee Saved Successfully");
+        log.info("Employee {} Saved Successfully", employee.getName());
     }
 
     @DeleteMapping("/employees/{employeeId}")
     public void deleteEmployee(@PathVariable(name="employeeId")Long employeeId){
         employeeService.deleteEmployee(employeeId);
-        System.out.println("Employee Deleted Successfully");
+        log.info("Employee {} Deleted Successfully", employeeId);
     }
 
     @PutMapping("/employees/{employeeId}")
