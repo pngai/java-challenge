@@ -24,8 +24,9 @@ public class EmployeeServiceImpl implements EmployeeService{
         return optEmp.get();
     }
 
-    public void saveEmployee(Employee employee){
-        employeeRepository.save(employee);
+    public Long saveEmployee(Employee employee){
+        Employee saved = employeeRepository.save(employee);
+        return saved.getId();
     }
 
     public void deleteEmployee(Long employeeId){

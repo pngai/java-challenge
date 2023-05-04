@@ -1,6 +1,8 @@
 package jp.co.axa.apidemo.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -12,6 +14,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="EMPLOYEE")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Employee {
 
     @Getter
@@ -35,4 +39,10 @@ public class Employee {
     @Column(name="DEPARTMENT")
     private String department;
 
+    public static Employee withoutId(
+            String name,
+            Integer salary,
+            String department) {
+        return new Employee(null, name, salary, department);
+    }
 }
