@@ -1,6 +1,7 @@
 package jp.co.axa.apidemo.services;
 
 import jp.co.axa.apidemo.entities.Employee;
+import jp.co.axa.apidemo.exception.ObjectNotFoundException;
 import jp.co.axa.apidemo.repositories.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,9 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     public Employee getEmployee(Long employeeId) {
-        Optional<Employee> optEmp = employeeRepository.findById(employeeId);
-        return optEmp.get();
+        Employee optEmp = employeeRepository.findById(employeeId)
+                .orElseThrow(ObjectNotFoundException::new);
+        return optEmp;
     }
 
     public Long saveEmployee(Employee employee){

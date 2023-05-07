@@ -1,11 +1,13 @@
 package jp.co.axa.apidemo.services;
 
 import jp.co.axa.apidemo.entities.Employee;
+import jp.co.axa.apidemo.exception.ObjectNotFoundException;
 import jp.co.axa.apidemo.repositories.EmployeeRepository;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -27,5 +29,12 @@ public class EmployeeServiceImplTest {
 
         assertThat(expectedId)
                 .isNotNull();
+    }
+
+    @Test
+    public void getNonExistEmployee() {
+        assertThatThrownBy(() -> {
+            Employee retrievedEmployee = unerTest.getEmployee(123L);
+        }).isInstanceOf(ObjectNotFoundException.class);
     }
 }

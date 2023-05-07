@@ -2,6 +2,8 @@ package jp.co.axa.apidemo.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jp.co.axa.apidemo.dto.CreateEmployeeDTO;
+import jp.co.axa.apidemo.entities.Employee;
+import jp.co.axa.apidemo.exception.ObjectNotFoundException;
 import jp.co.axa.apidemo.services.EmployeeService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +14,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -50,6 +55,28 @@ public class EmployeeControllerTest {
                         .header("Content-Type", "application/json")
                         .content(mapper.writeValueAsString(employee)))
                 .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    public void testGetSingleEmployeeSuccess() throws Exception {
+        Employee employee = new Employee (12L, "John", 12345, "Finance");
+        given(employeeService.getEmployee(any()))
+                .willReturn(employee);
+
+        mockMvc.perform(get("/api/v1/employees/{employeeId}",  employee.getId().toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(employee.getId()))
+                .andDo(print());
+    }
+
+    @Test
+    public void testGetNonExistentEmployee() throws Exception {
+        given(employeeService.getEmployee(any()))
+                .willThrow(ObjectNotFoundException.class);
+
+        mockMvc.perform(get("/api/v1/employees/{employeeId}",  "12345"))
+                .andExpect(status().isNotFound())
                 .andDo(print());
     }
 }
