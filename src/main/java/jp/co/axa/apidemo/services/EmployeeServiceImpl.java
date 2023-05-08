@@ -32,7 +32,10 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     public void deleteEmployee(Long employeeId){
-        employeeRepository.deleteById(employeeId);
+        int deletedCount =  employeeRepository.deleteByEmployeeId(employeeId);
+        if(deletedCount == 0) {
+            throw new ObjectNotFoundException();
+        }
     }
 
     public void updateEmployee(Employee employee) {

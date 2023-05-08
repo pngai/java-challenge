@@ -3,6 +3,7 @@ package jp.co.axa.apidemo.services;
 import jp.co.axa.apidemo.entities.Employee;
 import jp.co.axa.apidemo.exception.ObjectNotFoundException;
 import jp.co.axa.apidemo.repositories.EmployeeRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -10,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 public class EmployeeServiceImplTest {
 
@@ -37,4 +39,23 @@ public class EmployeeServiceImplTest {
             Employee retrievedEmployee = unerTest.getEmployee(123L);
         }).isInstanceOf(ObjectNotFoundException.class);
     }
+
+    @Test
+    public void deleteEmployee() {
+        given(employeeRepository.deleteByEmployeeId(any()))
+                .willReturn(1);
+
+        Assertions.assertThatCode(
+                () ->  unerTest.deleteEmployee(1234L)
+                )
+                .doesNotThrowAnyException();
+    }
+    @Test
+    public void deleteNonExistEmployee() {
+        assertThatThrownBy(() -> {
+            unerTest.deleteEmployee(1234L);
+        }).isInstanceOf(ObjectNotFoundException.class);
+    }
+
+
 }

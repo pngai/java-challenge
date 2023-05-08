@@ -16,6 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -76,6 +79,26 @@ public class EmployeeControllerTest {
                 .willThrow(ObjectNotFoundException.class);
 
         mockMvc.perform(get("/api/v1/employees/{employeeId}",  "12345"))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    public void testDeleteEmployeeSuccess() throws Exception {
+        willDoNothing().given(employeeService).deleteEmployee(any());
+
+        mockMvc.perform(delete("/api/v1/employees/{employeeId}",  12345))
+                .andExpect(status().isNoContent())
+                .andDo(print());
+    }
+
+    @Test
+    public void testDeleteNonExistentEmployee() throws Exception {
+        doThrow(ObjectNotFoundException.class)
+                .when(employeeService)
+                        .deleteEmployee(any());
+
+        mockMvc.perform(delete("/api/v1/employees/{employeeId}",  2234))
                 .andExpect(status().isNotFound())
                 .andDo(print());
     }
