@@ -39,6 +39,13 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     public void updateEmployee(Employee employee) {
-        employeeRepository.save(employee);
+        Employee emp = employeeRepository.findById(employee.getId())
+                .orElseThrow(() -> new ObjectNotFoundException());
+
+        emp.setName(employee.getName());
+        emp.setSalary(employee.getSalary());
+        emp.setDepartment(employee.getDepartment());
+
+        employeeRepository.save(emp);
     }
 }

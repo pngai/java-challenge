@@ -7,6 +7,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,7 +43,7 @@ public class EmployeeServiceImplTest {
     }
 
     @Test
-    public void deleteEmployee() {
+    public void deleteEmployeeSuccess() {
         given(employeeRepository.deleteByEmployeeId(any()))
                 .willReturn(1);
 
@@ -57,5 +59,24 @@ public class EmployeeServiceImplTest {
         }).isInstanceOf(ObjectNotFoundException.class);
     }
 
+    @Test
+    public void updateEmployeeSuccess() {
+        Employee employee = new Employee(1000L, "Tom", 12346, "Finance");
+        given(employeeRepository.findById(1000L))
+                .willReturn(Optional.of(employee));
 
+        Assertions.assertThatCode(
+                        () ->  unerTest.updateEmployee(employee)
+                )
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    public void updateNonExistentEmployee() {
+        Employee employee = new Employee(1000L, "Tom", 12346, "Finance");
+
+        assertThatThrownBy(() -> {
+            unerTest.updateEmployee(employee);
+        }).isInstanceOf(ObjectNotFoundException.class);
+    }
 }

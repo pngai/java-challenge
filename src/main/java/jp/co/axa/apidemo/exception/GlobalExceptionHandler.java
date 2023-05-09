@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({ MethodArgumentNotValidException.class })
-    public ResponseEntity<String> handleBadInputException(MethodArgumentNotValidException ex) {
+    @ExceptionHandler({ MethodArgumentNotValidException.class, BadRequestException.class })
+    public ResponseEntity<String> handleBadInputException(Exception ex) {
         return new ResponseEntity<>("bad request", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({ ObjectNotFoundException.class })
     public ResponseEntity<String> handleBadInputException(ObjectNotFoundException ex) {
-        return new ResponseEntity<>("bad request", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("object not found", HttpStatus.NOT_FOUND);
     }
 }

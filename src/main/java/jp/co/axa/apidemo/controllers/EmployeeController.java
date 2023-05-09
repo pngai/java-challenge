@@ -3,6 +3,7 @@ package jp.co.axa.apidemo.controllers;
 import jp.co.axa.apidemo.dto.CreateEmployeeDTO;
 import jp.co.axa.apidemo.dto.EmployeeCreatedDTO;
 import jp.co.axa.apidemo.entities.Employee;
+import jp.co.axa.apidemo.exception.BadRequestException;
 import jp.co.axa.apidemo.mapper.EmployeeMapper;
 import jp.co.axa.apidemo.services.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -52,10 +53,10 @@ public class EmployeeController {
     @PutMapping("/employees/{employeeId}")
     public void updateEmployee(@RequestBody Employee employee,
                                @PathVariable(name="employeeId")Long employeeId){
-        Employee emp = employeeService.getEmployee(employeeId);
-        if(emp != null){
-            employeeService.updateEmployee(employee);
+        if(!employee.getId().equals(employeeId)) {
+            throw new BadRequestException();
         }
+        employeeService.updateEmployee(employee);
 
     }
 

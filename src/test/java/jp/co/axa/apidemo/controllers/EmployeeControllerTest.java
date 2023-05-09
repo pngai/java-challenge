@@ -21,6 +21,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -100,6 +101,28 @@ public class EmployeeControllerTest {
 
         mockMvc.perform(delete("/api/v1/employees/{employeeId}",  2234))
                 .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    public void testUpdateEmployeeSuccess() throws Exception {
+        Employee employee = new Employee(1456L, "James", 12345, "Engineering");
+
+        mockMvc.perform(put("/api/v1/employees/{employeeId}",  1456)
+                        .header("Content-Type", "application/json")
+                        .content(mapper.writeValueAsString(employee)))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    public void testUpdateEmployeeBadRequest() throws Exception {
+        Employee employee = new Employee(1456L, "James", 12345, "Engineering");
+
+        mockMvc.perform(put("/api/v1/employees/{employeeId}",  1457)
+                        .header("Content-Type", "application/json")
+                        .content(mapper.writeValueAsString(employee)))
+                .andExpect(status().isBadRequest())
                 .andDo(print());
     }
 }
