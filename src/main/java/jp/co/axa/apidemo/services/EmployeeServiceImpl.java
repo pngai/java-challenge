@@ -20,17 +20,33 @@ public class EmployeeServiceImpl implements EmployeeService{
         return employees;
     }
 
+    /**
+     * Get a employee
+     * @param employeeId
+     * @return a Employee
+     * @Throws ObjectNotFoundException if employee with employeeId is not found
+     */
     public Employee getEmployee(Long employeeId) {
         Employee optEmp = employeeRepository.findById(employeeId)
                 .orElseThrow(ObjectNotFoundException::new);
         return optEmp;
     }
 
+    /**
+     * Save a employee
+     * @param employee
+     * @return employeeId representing the saved employee
+     */
     public Long saveEmployee(Employee employee){
         Employee saved = employeeRepository.save(employee);
         return saved.getId();
     }
 
+    /**
+     * Delete a employee
+     * @param employeeId
+     * @throws ObjectNotFoundException if no employee is found with given employeeId
+     */
     public void deleteEmployee(Long employeeId){
         int deletedCount =  employeeRepository.deleteByEmployeeId(employeeId);
         if(deletedCount == 0) {
@@ -38,6 +54,11 @@ public class EmployeeServiceImpl implements EmployeeService{
         }
     }
 
+    /**
+     * Update employee
+     * @param employee
+     * @throws ObjectNotFoundException if no employee with given id is found
+     */
     public void updateEmployee(Employee employee) {
         Employee emp = employeeRepository.findById(employee.getId())
                 .orElseThrow(() -> new ObjectNotFoundException());
